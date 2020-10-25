@@ -38,6 +38,8 @@ namespace API
                 options.UseSqlite(_config.GetConnectionString("DefaultConnection"));
             });
             services.AddControllers();
+            //Add CORS support
+            services.AddCors();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -54,9 +56,15 @@ namespace API
             //make our app to be able to use routing, from a page to page
             app.UseRouting();
 
+            //Here we add our cors configuration (cors must come btw UseRouting & UseAuthorization)
+
+            app.UseCors(builder => builder
+                .AllowAnyHeader() // we will be sending auth headers from d frontend so ds tells d api to allow any any
+                .AllowAnyMethod() // we will b sending get, put, post requests etc from the frontend so ds method tells ds api to allow it
+                .WithOrigins("https://localhost:4200")); //ds tells d cors to allow only origin from our angular base url
             app.UseAuthorization();
 
-            //ds take a look at our controllers to see the availale endpoints dt are available
+            //ds take a look at our controllers to see the available endpoints dt are available
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

@@ -433,3 +433,5 @@ $RECYCLE.BIN/
 !.vscode/extensions.json
 /CLASS/
 /API/appsettings.json
+/client/ssl/
+client/ssl/server.crt
