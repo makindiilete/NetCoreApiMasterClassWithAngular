@@ -11,7 +11,7 @@ namespace API.Data //ds class is inside API/Data
 
         }
 
-        //Using our entity (model) AppUser, we create a Users table in the database
+        //Using our entity (model) AppUser, we create a 'Users' table in the database
         public DbSet<AppUser> Users { get; set; }
     }
 }

@@ -3,14 +3,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using API.Data;
 using API.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]")] //  api/users
-    public class UsersController : ControllerBase
+    public class UsersController : BaseApiController
     {
         // We init our dbcontext class here to cater for data fetching from the backend
         private readonly DataContext _context;
@@ -22,6 +21,7 @@ namespace API.Controllers
 
         //Get api to return all users =>  api/users
         [HttpGet]
+        [AllowAnonymous]
         // ds method will return a List of users
          public async Task<ActionResult<List<AppUser>>> GetUsers()
         {
@@ -32,6 +32,7 @@ namespace API.Controllers
 
         //    api/users/3
         [HttpGet("{id}")]
+        [Authorize]
         // ds method will return the user with the given id
         public async Task<ActionResult<AppUser>>  GetUser(int id)
         {

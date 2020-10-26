@@ -1,8 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using API.Data;
+using API.Extensions;
+using API.Interfaces;
+using API.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -12,6 +17,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 
 namespace API
 {
@@ -30,16 +36,17 @@ namespace API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            //Init our created DbContext() class via DI
-            services.AddDbContext<DataContext>(options =>
-            {
-                //Here we indicate to use sqlLite and we pass the connection string dt it will use to connect to our database
-                //With our _config dt contains the app.settngs.json and appsettings.Development.json, we call the GetconnectionString method dt looks inside d dev file and retreive a key with the value "DefaultConnection"
-                options.UseSqlite(_config.GetConnectionString("DefaultConnection"));
-            });
+            // we moved our long code here to ApplicationServiceExtensions.cs and simply call d returned service here
+            services.AddApplicationServices(_config);
+
             services.AddControllers();
+
             //Add CORS support
             services.AddCors();
+
+            // we moved our long code here to AddIdentityServices.cs and simply call d returned service here
+            services.AddIdentityServices(_config);
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -58,10 +65,13 @@ namespace API
 
             //Here we add our cors configuration (cors must come btw UseRouting & UseAuthorization)
 
+            //order : - UseCors, UseAuthentication, UseAuthorization..
             app.UseCors(builder => builder
                 .AllowAnyHeader() // we will be sending auth headers from d frontend so ds tells d api to allow any any
                 .AllowAnyMethod() // we will b sending get, put, post requests etc from the frontend so ds method tells ds api to allow it
                 .WithOrigins("https://localhost:4200")); //ds tells d cors to allow only origin from our angular base url
+            // we add our middleware here to use our jwt authentication
+            app.UseAuthentication();
             app.UseAuthorization();
 
             //ds take a look at our controllers to see the available endpoints dt are available
