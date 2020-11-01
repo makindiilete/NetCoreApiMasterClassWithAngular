@@ -1,0 +1,31 @@
+<form #registerForm="ngForm" (ngSubmit)="register()" autocomplete="off">
+  <h2 class="text-center text-primary">Sign up</h2>
+  <hr />
+  <div class="form-group">
+    <label for="username">Username</label>
+    <input
+      type="text"
+      class="form-control"
+      id="username"
+      name="username"
+      [(ngModel)]="model.username"
+    />
+  </div>
+
+  <div class="form-group">
+    <label for="password">Password</label>
+    <input
+      type="text"
+      class="form-control"
+      id="password"
+      name="password"
+      [(ngModel)]="model.password"
+    />
+  </div>
+  <div class="form-group text-center">
+    <button class="btn btn-success mr-2">Register</button>
+    <!--    we raise event to parent to cancel the register view-->
+    <button class="btn btn-default" (click)="cancel()">Cancel</button>
+  </div>
+  <!-- /.text-center -->
+</form>
