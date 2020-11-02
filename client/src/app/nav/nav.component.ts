@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AccountService } from '../_services/account.service';
-import { Observable } from 'rxjs';
-import { User } from '../_models/user';
+import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-nav',
@@ -13,7 +13,11 @@ export class NavComponent implements OnInit {
   model: any = {};
 
   //inject the AccountService and make it public so it can be accessed from the template
-  constructor(public accountService: AccountService) {}
+  constructor(
+    public accountService: AccountService,
+    private router: Router,
+    private toastr: ToastrService
+  ) {}
 
   ngOnInit(): void {}
 
@@ -21,13 +25,20 @@ export class NavComponent implements OnInit {
   login() {
     this.accountService.login(this.model).subscribe(
       (response) => {
-        console.log(response);
+        // we navigate the users to members area
+        this.router.navigateByUrl('/members');
       },
-      (error) => console.log('Log in error ', error)
+      (error) => {
+        console.log('Log in error ', error);
+        // display the error msg from backend in a toast notification
+        this.toastr.error(error.error);
+      }
     );
   }
 
   logout() {
     this.accountService.logout();
+    // we navigate user back to homepage on logout
+    this.router.navigateByUrl('/');
   }
 }
