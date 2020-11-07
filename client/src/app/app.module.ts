@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
@@ -14,6 +14,10 @@ import { MemberDetailComponent } from './members/member-detail/member-detail.com
 import { ListComponent } from './list/list.component';
 import { MessagesComponent } from './messages/messages.component';
 import { SharedModule } from './_modules/shared.module';
+import { TestErrorsComponent } from './errors/test-errors/test-errors.component';
+import { ErrorInterceptor } from './_interceptors/error.interceptor';
+import { NotFoundComponent } from './errors/not-found/not-found.component';
+import { ServerErrorComponent } from './errors/server-error/server-error.component';
 
 @NgModule({
   declarations: [
@@ -25,6 +29,9 @@ import { SharedModule } from './_modules/shared.module';
     MemberDetailComponent,
     ListComponent,
     MessagesComponent,
+    TestErrorsComponent,
+    NotFoundComponent,
+    ServerErrorComponent,
   ],
   imports: [
     BrowserModule,
@@ -34,7 +41,18 @@ import { SharedModule } from './_modules/shared.module';
     FormsModule,
     SharedModule, // ds imports all d stuffs into our root module
   ],
-  providers: [],
+  providers: [
+    /*
+    provide : - we r providing an http interceptor,
+    useClass : - d class where the interceptor is defined
+    multi : - we want to add d interceptor to d existing interceptor array, not to override existing ones
+    */
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: ErrorInterceptor,
+      multi: true,
+    },
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

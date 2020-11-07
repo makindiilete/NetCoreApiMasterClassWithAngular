@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using API.Data;
 using API.Extensions;
 using API.Interfaces;
+using API.Middleware;
 using API.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -50,19 +51,22 @@ namespace API
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        // This contains list of our middlewares
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            // ds check if we running on dev and then provides the dev exception page when we encounter errors
+            /*// ds check if we running on dev and then provides the dev exception page when we encounter errors
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-            }
+            }*/
+
+            //We remove the  app.UseDeveloperExceptionPage(); available by default to handle exception and use our custom exception middleware dt caters for both dev and prod env by default
+            app.UseMiddleware<ExceptionMiddleware>();
 
             app.UseHttpsRedirection();
 
             //make our app to be able to use routing, from a page to page
             app.UseRouting();
-
             //Here we add our cors configuration (cors must come btw UseRouting & UseAuthorization)
 
             //order : - UseCors, UseAuthentication, UseAuthorization..

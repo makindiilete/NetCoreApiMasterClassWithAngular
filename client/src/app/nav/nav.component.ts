@@ -13,27 +13,16 @@ export class NavComponent implements OnInit {
   model: any = {};
 
   //inject the AccountService and make it public so it can be accessed from the template
-  constructor(
-    public accountService: AccountService,
-    private router: Router,
-    private toastr: ToastrService
-  ) {}
+  constructor(public accountService: AccountService, private router: Router) {}
 
   ngOnInit(): void {}
 
   //ngSubmit event will call ds method to submit the form
   login() {
-    this.accountService.login(this.model).subscribe(
-      (response) => {
-        // we navigate the users to members area
-        this.router.navigateByUrl('/members');
-      },
-      (error) => {
-        console.log('Log in error ', error);
-        // display the error msg from backend in a toast notification
-        this.toastr.error(error.error);
-      }
-    );
+    this.accountService.login(this.model).subscribe((response) => {
+      // we navigate the users to members area
+      this.router.navigateByUrl('/members');
+    });
   }
 
   logout() {

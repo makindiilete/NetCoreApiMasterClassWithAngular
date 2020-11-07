@@ -10,6 +10,8 @@ namespace API.DTOs
         [Required]
         public string UserName { get; set; }
         [Required]
+        // Adding a minimum length validation on the register request body
+        [StringLength(8, MinimumLength = 4)]
         public string Password { get; set; }
     }
 }
