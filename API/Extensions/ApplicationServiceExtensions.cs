@@ -1,6 +1,8 @@
 using API.Data;
+using API.Helpers;
 using API.Interfaces;
 using API.Services;
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -13,6 +15,10 @@ namespace API.Extensions
         {
             //here we setup our ITokenService as dependency for this app and also states the 'TokenService' class as the class that implements ds service..
             services.AddScoped<ITokenService, TokenService>();
+            //we tell the app to use our "UserRepository" implementation
+            services.AddScoped<IUserRepository, UserRepository>();
+            //We register our AutoMapper
+            services.AddAutoMapper(typeof(AutoMapperProfiles).Assembly);
             //Init our created DbContext() class via DI
             services.AddDbContext<DataContext>(options =>
             {

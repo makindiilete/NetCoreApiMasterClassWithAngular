@@ -2,48 +2,52 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using API.Data;
+using API.DTOs;
 using API.Entities;
+using API.Interfaces;
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers
 {
+    [Authorize]
     public class UsersController : BaseApiController
     {
-        // We init our dbcontext class here to cater for data fetching from the backend
-        private readonly DataContext _context;
+        private readonly IUserRepository _userRepository;
+        private readonly IMapper _mapper;
 
-        public UsersController(DataContext context)
+        public UsersController(IUserRepository userRepository, IMapper mapper)
         {
-            _context = context;
+            _userRepository = userRepository;
+            _mapper = mapper;
         }
 
         //Get api to return all users =>  api/users
         [HttpGet]
-        [AllowAnonymous]
         // ds method will return a List of users
-         public async Task<ActionResult<List<AppUser>>> GetUsers()
+         public async Task<ActionResult<IEnumerable<MemberDto>>> GetUsers()
         {
-            //_context field now points to our 'Users' table defined as a dbset inside DataContext.cs so return all users and convert them to list
-            // return _context.Users.ToList();
-            return await _context.Users.ToListAsync();
+            //we get our users
+            var users = await _userRepository.GetMembersAsync();
+            // we then returned the shaped user
+            return Ok(users);
         }
 
-        //    api/users/3
-        [HttpGet("{id}")]
-        [Authorize]
-        // ds method will return the user with the given id
-        public async Task<ActionResult<AppUser>>  GetUser(int id)
+        //    api/users/mavis
+        [HttpGet("{username}")]
+        // ds method will return the user with the given username
+        public async Task<ActionResult<MemberDto>>  GetUser(string username)
         {
-            var user = await _context.Users.FindAsync(id);
+            var user = await _userRepository.GetMemberAsync(username);
             if (user != null)
             {
-                return await _context.Users.FindAsync(id);
+                return Ok(user);
 
             }
 
-            return NotFound();
+            return NotFound("No User Found With That Username");
         }
     }
 }
