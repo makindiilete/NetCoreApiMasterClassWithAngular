@@ -1,0 +1,40 @@
+.card:hover img {
+  transform: scale(1.2, 1.2);
+  transition-duration: 500ms;
+  transition-timing-function: ease-out;
+  opacity: 0.7;
+}
+
+.card img {
+  transform: scale(1, 1);
+  transition-duration: 500ms;
+  transition-timing-function: ease-out;
+}
+
+/*ds is the parent wrapper that wraps d img and d icons...*/
+.card-img-wrapper {
+  overflow: hidden;
+  position: relative;
+}
+
+/*by default the buttons are hidden using the opacity : 0 */
+.member-icons {
+  position: absolute;
+  bottom: -30%;
+  left: 0;
+  right: 0;
+  margin-right: auto;
+  margin-left: auto;
+  opacity: 0;
+}
+
+/*hovering over the parent tag reveals the icons using the opacity : 1*/
+.card-img-wrapper:hover .member-icons {
+  bottom: 0;
+  opacity: 1;
+}
+
+/* ds animates the icons*/
+.animate {
+  transition: all 0.3s ease-in;
+}

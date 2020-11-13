@@ -18,6 +18,8 @@ import { TestErrorsComponent } from './errors/test-errors/test-errors.component'
 import { ErrorInterceptor } from './_interceptors/error.interceptor';
 import { NotFoundComponent } from './errors/not-found/not-found.component';
 import { ServerErrorComponent } from './errors/server-error/server-error.component';
+import { MemberCardComponent } from './members/member-card/member-card.component';
+import { JwtInterceptor } from './_interceptors/jwt.interceptor';
 
 @NgModule({
   declarations: [
@@ -32,6 +34,7 @@ import { ServerErrorComponent } from './errors/server-error/server-error.compone
     TestErrorsComponent,
     NotFoundComponent,
     ServerErrorComponent,
+    MemberCardComponent,
   ],
   imports: [
     BrowserModule,
@@ -43,6 +46,7 @@ import { ServerErrorComponent } from './errors/server-error/server-error.compone
   ],
   providers: [
     /*
+    ds handles http error globally in the app
     provide : - we r providing an http interceptor,
     useClass : - d class where the interceptor is defined
     multi : - we want to add d interceptor to d existing interceptor array, not to override existing ones
@@ -50,6 +54,12 @@ import { ServerErrorComponent } from './errors/server-error/server-error.compone
     {
       provide: HTTP_INTERCEPTORS,
       useClass: ErrorInterceptor,
+      multi: true,
+    },
+    // ds handles attachement of token to every requests
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: JwtInterceptor,
       multi: true,
     },
   ],

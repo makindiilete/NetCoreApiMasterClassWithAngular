@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 import { User } from '../_models/user';
 import { ReplaySubject } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 /*An angular service is Singleton i.e. It stays on throughout the lifetime of the app until the app is closed or user leaves the app*/
 //ds means ds service can be injected into other components or other services in our app
@@ -11,7 +12,7 @@ import { ReplaySubject } from 'rxjs';
   providedIn: 'root',
 })
 export class AccountService {
-  baseUrl = 'https://localhost:5001/api/';
+  baseUrl = environment.apiUrl; // replaced hardCoded api url with env variable
   private currentUserSource = new ReplaySubject<User>(1); //any component dt subscribes to ds User observable will get the current user stored in ds observable... here we setting d bufferSize to 1 which means we will only store single user
   currentUser$ = this.currentUserSource.asObservable();
   constructor(private http: HttpClient) {}
