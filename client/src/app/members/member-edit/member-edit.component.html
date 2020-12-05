@@ -1,0 +1,111 @@
+<div class="row" *ngIf="member">
+  <div class="col-md-4">
+    <h1>Your Profile</h1>
+  </div>
+  <div class="col-md-8">
+    <!--    We show the alert only if changes has been made to the form-->
+    <div class="alert alert-info" *ngIf="editForm.dirty">
+      <strong>Information: </strong>You have made changes. Any unsaved changes
+      will be lost
+    </div>
+  </div>
+
+  <div class="col-md-4">
+    <div class="card">
+      <img
+        src="{{ member.photoUrl || './assets/user.png' }}"
+        alt="{{ member.knownAs }}"
+        class="card-img-top img-thumbnail"
+      />
+      <div class="card-body">
+        <div>
+          <strong>Location : </strong>
+          <p>{{ member.city }}, {{ member.country }}</p>
+        </div>
+        <div>
+          <strong>Age : </strong>
+          <p>{{ member.age }}</p>
+        </div>
+        <div>
+          <strong>Last Active : </strong>
+          <p>{{ member.lastActive | date }}</p>
+        </div>
+        <div>
+          <strong>Member Since : </strong>
+          <p>{{ member.created | date }}</p>
+        </div>
+      </div>
+      <div class="card-footer">
+        <!--
+        The form attribute specifies the form the button belongs to.
+The value of this attribute must be equal to the id attribute of a <form> element in the same document.
+
+Since the button is outside the form starting from line 53, we need to use the 'form' attribute to state the form this button belongs to
+        -->
+        <!--        We disable the button if changes has not been made to the form-->
+        <button
+          form="editForm"
+          class="btn btn-success btn-block"
+          [disabled]="!editForm.dirty"
+        >
+          Save changes
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-8">
+    <tabset class="member-tabset">
+      <tab heading="About {{ member.knownAs }}" id="tab1">
+        <form #editForm="ngForm" (ngSubmit)="updateMember()" id="editForm">
+          <h4>Description</h4>
+          <!--[(ngModel)]="member.introduction" : - Since we are editing the user details, we need to use two way binding to bind each of our input to the user details stored in the database so the form is prefilled with those details and we can then edit them... So while editing, we use two way bindind but while creating afresh, we use normal 'ngModel'-->
+          <textarea
+            name="introduction"
+            rows="6"
+            [(ngModel)]="member.introduction"
+            class="form-control mb-2"
+          >
+          </textarea>
+          <h4>Looking for</h4>
+          <textarea
+            name="lookingFor"
+            rows="6"
+            [(ngModel)]="member.lookingFor"
+            class="form-control mb-2"
+          >
+          </textarea>
+          <h4>Interests</h4>
+          <textarea
+            name="interest"
+            rows="6"
+            [(ngModel)]="member.interest"
+            class="form-control mb-2"
+          >
+          </textarea>
+          <h4>Location</h4>
+          <div class="form-inline">
+            <label for="city">City: </label>
+            <input
+              type="text"
+              name="city"
+              id="city"
+              class="form-control mx-2 col-md-4"
+              [(ngModel)]="member.city"
+            />
+            <label for="country">Country: </label>
+            <input
+              type="text"
+              name="country"
+              id="country"
+              class="form-control mx-2 col-md-4"
+              [(ngModel)]="member.country"
+            />
+          </div>
+        </form>
+      </tab>
+      <tab heading="Edit Photos" id="tab2">
+        <p>Photo Edit will go here</p>
+      </tab>
+    </tabset>
+  </div>
+</div>

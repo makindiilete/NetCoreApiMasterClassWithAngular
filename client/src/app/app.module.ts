@@ -20,6 +20,9 @@ import { NotFoundComponent } from './errors/not-found/not-found.component';
 import { ServerErrorComponent } from './errors/server-error/server-error.component';
 import { MemberCardComponent } from './members/member-card/member-card.component';
 import { JwtInterceptor } from './_interceptors/jwt.interceptor';
+import { MemberEditComponent } from './members/member-edit/member-edit.component';
+import { NgxSpinnerModule } from 'ngx-spinner';
+import { LoadingInterceptor } from './_interceptors/loading.interceptor';
 
 @NgModule({
   declarations: [
@@ -35,6 +38,7 @@ import { JwtInterceptor } from './_interceptors/jwt.interceptor';
     NotFoundComponent,
     ServerErrorComponent,
     MemberCardComponent,
+    MemberEditComponent,
   ],
   imports: [
     BrowserModule,
@@ -43,6 +47,7 @@ import { JwtInterceptor } from './_interceptors/jwt.interceptor';
     BrowserAnimationsModule,
     FormsModule,
     SharedModule, // ds imports all d stuffs into our root module
+    NgxSpinnerModule, //spinner loading indicator
   ],
   providers: [
     /*
@@ -56,10 +61,16 @@ import { JwtInterceptor } from './_interceptors/jwt.interceptor';
       useClass: ErrorInterceptor,
       multi: true,
     },
-    // ds handles attachement of token to every requests
+    // ds handles attachment of token to every requests
     {
       provide: HTTP_INTERCEPTORS,
       useClass: JwtInterceptor,
+      multi: true,
+    },
+    // ds handles attachment of spinner loader to every requests
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: LoadingInterceptor,
       multi: true,
     },
   ],

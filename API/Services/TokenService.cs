@@ -27,7 +27,11 @@ namespace API.Services
             var claims = new List<Claim>
             {
                 // we store our userName inside the jwt
-                new Claim(JwtRegisteredClaimNames.NameId, user.UserName)
+                new Claim("username", user.UserName)
+
+                //OR
+
+                // new Claim(JwtRegisteredClaimNames.NameId, user.UserName),
             };
 
                 // Here we specify the signing algorithm to sign our token

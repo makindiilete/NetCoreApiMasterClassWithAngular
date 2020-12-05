@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using API.Data;
 using API.DTOs;
@@ -48,6 +49,37 @@ namespace API.Controllers
             }
 
             return NotFound("No User Found With That Username");
+        }
+
+        [HttpPut]
+        public async Task<ActionResult> UpdateUser(MemberUpdateDto memberUpdateDto)
+        {
+            // if u store d username in the token using : - new Claim(JwtRegisteredClaimNames.NameId, user.UserName),
+            // var username = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            // if u store d username in the token using : - new Claim("username", user.UserName),
+            var username = User.FindFirst(claim => claim.Type == "username")?.Value;
+            var user = await _userRepository.GetUserByUsernameAsync(username);
+
+            // without autoMapper we will av to do this
+            // user.City = memberUpdateDto.City;
+            // user.Country = memberUpdateDto.Country;
+            // user.Introduction = memberUpdateDto.Introduction;
+            // user.LookingFor = memberUpdateDto.LookingFor;
+            // user.Interest = memberUpdateDto.Interest;
+
+            //With AutoMapper, ds is all we need to do
+            _mapper.Map(memberUpdateDto, user);
+
+            //we call d user repository to update the user details
+            _userRepository.UpdateUser(user);
+            if (await _userRepository.SaveAllAsync())
+            {
+                // we return 204 reponse so we do not need to return any data to the user....
+                return NoContent();
+            }
+
+            return BadRequest("Failed to update user");
         }
     }
 }
