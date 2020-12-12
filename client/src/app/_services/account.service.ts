@@ -28,10 +28,7 @@ export class AccountService {
           map((response: User) => {
             const user = response;
             if (user) {
-              // d user is stored in d localStorage and the currentUserSource observable gts d stored user ready to return it to any subscribe via the 'currentUser$'
-              localStorage.setItem('user', JSON.stringify(user));
-              // we then set our observable source to the authenticated user
-              this.currentUserSource.next(user);
+              this.setCurrentUser(user);
             }
           })
         )
@@ -49,10 +46,7 @@ export class AccountService {
           map((response: User) => {
             const user = response;
             if (user) {
-              // d user is stored in d localStorage and the currentUserSource observable gts d stored user ready to return it to any subscribe via the 'currentUser$'
-              localStorage.setItem('user', JSON.stringify(user));
-              // we then set our observable source to the authenticated user
-              this.currentUserSource.next(user);
+              this.setCurrentUser(user);
             }
             // we can optionally returned ds user to d subscriber but its not compulsory
             return user;
@@ -61,8 +55,11 @@ export class AccountService {
     );
   }
 
-  //app.component.ts calls ds method sending the user retreived from d localStorage as arg and we update d userSource
+  //app.component.ts calls ds method sending the user retrieved from d localStorage as arg and we update d userSource
   setCurrentUser(user: User) {
+    // d user is stored in d localStorage and the currentUserSource observable gts d stored user ready to return it to any subscribe via the 'currentUser$'
+    localStorage.setItem('user', JSON.stringify(user));
+    // we then set our observable source to the authenticated user
     this.currentUserSource.next(user);
   }
 

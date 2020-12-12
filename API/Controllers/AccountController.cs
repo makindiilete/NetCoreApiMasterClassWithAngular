@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
@@ -58,6 +59,8 @@ namespace API.Controllers
         {
             //We can also use 'FirstOrDefault()' here. d difference is dt 'SingleOrDefault' throws an exception if we have more than one match, 'FirstOrDefault' does not throw an error but returns d first match or null if no match is found
             var user = await _context.Users
+                    // Since the 'Photos' property of AppUser belongs to a different entity "Photo.cs" we need to include it as part of details we are returning for a user
+                .Include(appUser => appUser.Photos)
                 .SingleOrDefaultAsync(appUser => appUser.UserName == loginDto.Username);
             if (user == null)
             {
@@ -83,7 +86,8 @@ namespace API.Controllers
             return new UserDto
             {
                 Token = _tokenService.CreateToken(user),
-                Username = user.UserName
+                Username = user.UserName,
+                MainImage = user.Photos.FirstOrDefault(p => p.IsMain)?.Url
             };
         }
 

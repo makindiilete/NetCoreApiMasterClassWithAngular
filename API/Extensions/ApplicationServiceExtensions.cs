@@ -1,4 +1,5 @@
 using API.Data;
+using API.Entities;
 using API.Helpers;
 using API.Interfaces;
 using API.Services;
@@ -13,8 +14,12 @@ namespace API.Extensions
     {
         public static IServiceCollection AddApplicationServices(this IServiceCollection services, IConfiguration configuration)
         {
+            //here we setup our Cloudinary service
+            services.Configure<CloudinarySettings>(configuration.GetSection("CloudinarySettings"));
             //here we setup our ITokenService as dependency for this app and also states the 'TokenService' class as the class that implements ds service..
             services.AddScoped<ITokenService, TokenService>();
+            //here we setup our PhotoService as dependency for this app and also states the 'PhotoService' class as the class that implements ds service
+            services.AddScoped<IPhotoService, PhotoService>();
             //we tell the app to use our "UserRepository" implementation
             services.AddScoped<IUserRepository, UserRepository>();
             //We register our AutoMapper

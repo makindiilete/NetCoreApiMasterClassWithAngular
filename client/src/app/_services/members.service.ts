@@ -51,4 +51,15 @@ export class MembersService {
       })
     );
   }
+
+  //this method set the photo with d passed id as the main photo for the user
+  setMainPhoto(photoId: number) {
+    //we do not need to send a body so we send an empty object
+    return this.http.put(this.baseUrl + 'users/set-main-photo/' + photoId, {});
+  }
+
+  // ds method delete the photo with the given id
+  deletePhoto(photoId: number) {
+    return this.http.delete(this.baseUrl + 'users/delete-photo/' + photoId);
+  }
 }
