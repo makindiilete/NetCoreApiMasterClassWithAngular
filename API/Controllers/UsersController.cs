@@ -77,6 +77,7 @@ namespace API.Controllers
             var user = await _userRepository.GetUserByUsernameAsync(username);
 
             // without autoMapper we will av to do this
+            
             // user.City = memberUpdateDto.City;
             // user.Country = memberUpdateDto.Country;
             // user.Introduction = memberUpdateDto.Introduction;

@@ -6,6 +6,7 @@ using API.Data;
 using API.DTOs;
 using API.Entities;
 using API.Interfaces;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,11 +16,13 @@ namespace API.Controllers
     {
         private readonly DataContext _context;
         private readonly ITokenService _tokenService;
+        private readonly IMapper _mapper;
 
-        public AccountController(DataContext context, ITokenService tokenService)
+        public AccountController(DataContext context, ITokenService tokenService, IMapper mapper)
         {
             _context = context; // to query d database
             _tokenService = tokenService; // to generate jwt tokens
+            _mapper = mapper;
         }
 
         //api/register
@@ -31,17 +34,27 @@ namespace API.Controllers
             {
                 return BadRequest( "UserName Already Exist");
             }
+
+            var user = _mapper.Map<AppUser>(registerDto);
             //ds provides us with the hashing algorithm for the password.. d 'using' statement tell d class to dispose when we r done
             using var hmac = new HMACSHA512();
+
+            user.UserName = registerDto.UserName.ToLower();
+            user.PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(registerDto.Password));
+            user.PasswordSalt = hmac.Key;
+            
             //create a new user
-            var user = new AppUser
+            /*var user = new AppUser
             {
                 // we convert d passed username to lowercase b4 storing it in d db so dt when we check for it later we can check with lower case
                 UserName = registerDto.UserName.ToLower(),
+                
                 //compute d string password to a hash
                 PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(registerDto.Password)),
                 PasswordSalt = hmac.Key
-            };
+            };*/
+            
+            
             //add the new user to our Users table using our _context class
              await _context.Users.AddAsync(user);
              await _context.SaveChangesAsync();
@@ -49,7 +62,8 @@ namespace API.Controllers
              return new UserDto
              {
                  Token = _tokenService.CreateToken(user),
-                 Username = user.UserName
+                 Username = user.UserName,
+                 KnownAs = user.KnownAs 
              };
         }
 
@@ -87,7 +101,8 @@ namespace API.Controllers
             {
                 Token = _tokenService.CreateToken(user),
                 Username = user.UserName,
-                MainImage = user.Photos.FirstOrDefault(p => p.IsMain)?.Url
+                MainImage = user.Photos.FirstOrDefault(p => p.IsMain)?.Url,
+                KnownAs = user.KnownAs // we included ds so we can use it in d navbar instead of the username    
             };
         }
 

@@ -1,7 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -48,8 +48,10 @@ import { PhotoEditorComponent } from './members/photo-editor/photo-editor.compon
     HttpClientModule,
     BrowserAnimationsModule,
     FormsModule,
+    ReactiveFormsModule, // for reactive form
     SharedModule, // ds imports all d stuffs into our root module
-    NgxSpinnerModule, //spinner loading indicator
+    NgxSpinnerModule,
+    //spinner loading indicator
   ],
   providers: [
     /*

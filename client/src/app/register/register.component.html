@@ -1,31 +1,151 @@
-<form #registerForm="ngForm" (ngSubmit)="register()" autocomplete="off">
+<!--(ngSubmit)="registerForm.valid && register()" : - ds ensures d form is valid before we can submit using the enter key-->
+<form
+  [formGroup]="registerForm"
+  (ngSubmit)="registerForm.valid && register()"
+  autocomplete="off"
+>
   <h2 class="text-center text-primary">Sign up</h2>
   <hr />
+
+  <div class="form-group">
+    <label class="form-check-label mr-2">I am a : </label>
+    <div class="form-check form-check-inline">
+      <input
+        class="form-check-input"
+        type="radio"
+        id="male"
+        value="male"
+        formControlName="gender"
+      />
+      <label class="form-check-label" for="male">Male</label>
+    </div>
+    <div class="form-check form-check-inline">
+      <input
+        class="form-check-input"
+        type="radio"
+        id="female"
+        value="female"
+        formControlName="gender"
+      />
+      <label class="form-check-label" for="female">Female</label>
+    </div>
+  </div>
+
   <div class="form-group">
     <label for="username">Username</label>
     <input
+      [class.is-invalid]="username.errors && username.touched"
       type="text"
       class="form-control"
       id="username"
-      name="username"
-      [(ngModel)]="model.username"
+      formControlName="username"
     />
+    <div class="invalid-feedback">Please enter a username</div>
+  </div>
+
+  <div class="form-group">
+    <label for="knownAs">Known As</label>
+    <input
+      [class.is-invalid]="knownAs.errors && knownAs.touched"
+      type="text"
+      class="form-control"
+      id="knownAs"
+      formControlName="knownAs"
+    />
+    <div class="invalid-feedback">Please enter a value</div>
+  </div>
+  <div class="form-group">
+    <label for="dateOfBirth">Date Of Birth</label>
+    <input
+      [class.is-invalid]="dateOfBirth.errors && dateOfBirth.touched"
+      type="text"
+      class="form-control"
+      id="dateOfBirth"
+      formControlName="dateOfBirth"
+      bsDatepicker
+      [bsConfig]="{
+        dateInputFormat: 'DD MMMM YYYY',
+        containerClass: 'theme-red'
+      }"
+      [maxDate]="maxDate"
+    />
+    <div class="invalid-feedback">Please enter a value</div>
+  </div>
+
+  <div class="form-group">
+    <label for="city">City</label>
+    <input
+      [class.is-invalid]="city.errors && city.touched"
+      type="text"
+      class="form-control"
+      id="city"
+      formControlName="city"
+    />
+    <div class="invalid-feedback">Please enter a value</div>
+  </div>
+
+  <div class="form-group">
+    <label for="country">Country</label>
+    <input
+      [class.is-invalid]="country.errors && country.touched"
+      type="text"
+      class="form-control"
+      id="country"
+      formControlName="country"
+    />
+    <div class="invalid-feedback">Please enter a value</div>
   </div>
 
   <div class="form-group">
     <label for="password">Password</label>
     <input
+      [class.is-invalid]="password.errors && password.touched"
       type="text"
       class="form-control"
       id="password"
-      name="password"
-      [(ngModel)]="model.password"
+      formControlName="password"
     />
+    <div *ngIf="password.hasError('required')" class="invalid-feedback">
+      Please enter a password
+    </div>
+    <div *ngIf="password.hasError('minlength')" class="invalid-feedback">
+      Password must be at least 4 characters
+    </div>
+    <div *ngIf="password.hasError('maxlength')" class="invalid-feedback">
+      Password cannot be greater than 8 characters
+    </div>
   </div>
+  <div class="form-group">
+    <label for="confirmPassword">Confirm Password</label>
+    <input
+      [class.is-invalid]="confirmPassword.errors && confirmPassword.touched"
+      type="text"
+      class="form-control"
+      id="confirmPassword"
+      formControlName="confirmPassword"
+    />
+    <div *ngIf="confirmPassword.hasError('required')" class="invalid-feedback">
+      Please enter a confirm Password
+    </div>
+    <div
+      *ngIf="confirmPassword.hasError('passwordMismatch')"
+      class="invalid-feedback"
+    >
+      Confirm Password must match password
+    </div>
+  </div>
+  <!--We display a list of all validation errors-->
+  <div class="row mt-5" *ngIf="validationErrors.length > 0">
+    <ul class="text-danger">
+      <li *ngFor="let error of validationErrors">{{ error }}</li>
+    </ul>
+  </div>
+
   <div class="form-group text-center">
-    <button class="btn btn-success mr-2">Register</button>
+    <button class="btn btn-success mr-2" [disabled]="registerForm.invalid">
+      Register
+    </button>
     <!--    we raise event to parent to cancel the register view-->
     <button class="btn btn-default" (click)="cancel()">Cancel</button>
   </div>
-  <!-- /.text-center -->
 </form>

@@ -27,6 +27,9 @@ namespace API.Helpers
 
             //Since we are updating a user with MemberUpdateDto, MemberUpdateDto will be the source and will be on the left because we want to replace all the values of the fields inside AppUser that matches a field inside MemberUpdateDto to the values we are sending from the frontend....
             CreateMap<MemberUpdateDto, AppUser>();
+
+            //We register a user with RegisterDto and then transform it to an AppUser so AppUser takes all the values RegisterDto is sending
+            CreateMap<RegisterDto, AppUser>();
         }
     }
 }
